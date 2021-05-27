@@ -42,7 +42,7 @@ router.post(
             },
           );
         } catch (error) {
-          return next(error);
+          return res.status;
         }
       },
     )(req, res, next);

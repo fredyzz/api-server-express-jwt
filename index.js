@@ -20,4 +20,9 @@ server.use(express.urlencoded({ extended: true }));
 server.use('/api/', routes);
 server.use('/api/user', passport.authenticate('jwt', { session: false }), protectedRoutes);
 
+server.use((err, req, res) => {
+  res.status(err.status || 500);
+  res.json({ error: err });
+});
+
 server.listen(PORT, debug(`server is running on port ${PORT}`));
