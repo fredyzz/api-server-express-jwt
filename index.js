@@ -4,6 +4,8 @@ const morgan = require('morgan');
 
 require('dotenv').config();
 
+require('./src/ddbb/mongoose.config');
+
 const SERVER = express();
 const PORT = process.env.PORT || 4000;
 
