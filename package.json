@@ -1,4 +1,12 @@
-{
+{"name": "api-server-passport-jwt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "DEBUG=server,server:* nodemon index.js",
+    "debug": "nodemon --inspect-brk index.js",
+    "test": "jest --watchAll --collect-coverage"
+  },
   "dependencies": {
     "debug": "^4.3.1",
     "dotenv": "^10.0.0",
