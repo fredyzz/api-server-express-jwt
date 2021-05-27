@@ -6,7 +6,7 @@ router.get(
   '/',
   (req, res) => {
     res.json({
-      message: 'You made it to the secure route',
+      message: 'You made it to the protected route',
       user: req.user,
       token: req.query.secret_token,
     });
