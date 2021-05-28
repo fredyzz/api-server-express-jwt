@@ -3,6 +3,7 @@ const express = require('express');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 
+const refreshTokens = [];
 const router = express.Router();
 
 router.post(
@@ -36,7 +37,20 @@ router.post(
               if (error) return next(error);
 
               const body = { _id: user._id, email: user.email };
-              const token = jwt.sign({ user: body }, process.env.SECRET_KEY);
+              const token = jwt.sign(
+                { user: body },
+                process.env.SECRET_KEY,
+                { expiresIn: process.env.TOKEN_REFRESH_TIME },
+              );
+              const refreshToken = jwt.sign(
+                { user: body },
+                process.env.SECRET_KEY,
+              );
+
+              refreshTokens.push(
+                token,
+                refreshToken,
+              );
 
               return res.json({ token });
             },
@@ -48,5 +62,35 @@ router.post(
     )(req, res, next);
   },
 );
+
+router.post('/token', (req, res) => {
+  const { token } = req.body;
+
+  if (!token) {
+    return res.sendStatus(401);
+  }
+
+  if (!refreshTokens.includes(token)) {
+    return res.sendStatus(403);
+  }
+
+  return jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
+    if (err) {
+      return res.sendStatus(403);
+    }
+
+    const data = { _id: user._id, email: user.email };
+
+    const accessToken = jwt.sign(
+      { user: data },
+      process.env.SECRET_KEY,
+      { expiresIn: process.env.TOKEN_REFRESH_TIME },
+    );
+
+    return res.json({
+      accessToken,
+    });
+  });
+});
 
 module.exports = router;
