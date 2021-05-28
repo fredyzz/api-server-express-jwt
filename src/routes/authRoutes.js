@@ -3,7 +3,7 @@ const express = require('express');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 
-const refreshTokens = [];
+let refreshTokens = [];
 const router = express.Router();
 
 router.post(
@@ -91,6 +91,13 @@ router.post('/token', (req, res) => {
       accessToken,
     });
   });
+});
+
+router.post('/logout', (req, res) => {
+  const { token } = req.body;
+  refreshTokens = refreshTokens.filter((current) => current !== token);
+
+  res.send('Logout successful');
 });
 
 module.exports = router;
